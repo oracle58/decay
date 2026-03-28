@@ -1,14 +1,4 @@
-
-/// Visual style for a progress bar.
-#[derive(Clone, Copy)]
-pub enum ProgressStyle {
-    /// Smooth block characters: █▉▊▋▌▍▎▏░
-    Smooth,
-    /// Classic ASCII: [####....]
-    Classic,
-    /// Dot style: ●●●○○○
-    Dot,
-}
+use crate::core::node::ProgressStyle;
 
 /// Progress bar component with configurable style and colors.
 pub struct ProgressBar {

@@ -47,6 +47,7 @@ impl Rng {
     }
 
     pub fn pick<'a, T>(&mut self, slice: &'a [T]) -> &'a T {
+        assert!(!slice.is_empty(), "Rng::pick: empty slice");
         &slice[self.next_u64() as usize % slice.len()]
     }
 

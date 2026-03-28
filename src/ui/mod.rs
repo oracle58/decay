@@ -4,7 +4,7 @@ pub mod progress;
 
 pub use theme::Theme;
 
-use crate::core::app::App;
+use crate::core::app::{App, DeltaTime};
 use crate::core::context::Context;
 use crate::core::input::{Input, KeyCode, MouseButton, MouseKind};
 use crate::core::node::*;
@@ -95,14 +95,14 @@ fn compute_anchor(anchor: Anchor, parent: Rect) -> Rect {
 // Animation tick
 
 fn tick_animations(ctx: &mut Context) {
-    const DT: f32 = 1.0 / 60.0;
+    let dt = ctx.store::<DeltaTime>().map(|d| d.0).unwrap_or(1.0 / 60.0);
     for node in ctx.nodes_mut() {
         match &mut node.content {
             Content::Spinner { elapsed, speed, .. } => {
-                *elapsed += DT * *speed;
+                *elapsed += dt * *speed;
             }
             Content::AnimatedText { elapsed, speed, .. } => {
-                *elapsed += DT * *speed;
+                *elapsed += dt * *speed;
             }
             _ => {}
         }
@@ -238,24 +238,56 @@ fn update_interactions(ctx: &mut Context) {
             }
         }
     }
+
+    // Drive TextInput keyboard handling for the focused node
+    let is_text_input = ctx.node(focused_entity)
+        .is_some_and(|n| matches!(n.content, Content::TextInput { .. }));
+
+    if is_text_input {
+        let keys: Vec<KeyCode> = ctx.store::<Input>()
+            .map(|i| i.pressed_keys().to_vec())
+            .unwrap_or_default();
+
+        if let Some(node) = ctx.node_mut(focused_entity) {
+            if let Content::TextInput { ref mut value, ref mut cursor, max_len, .. } = node.content {
+                for key in &keys {
+                    match key {
+                        KeyCode::Char(c) => {
+                            if value.chars().count() < max_len {
+                                let byte_pos = value.char_indices()
+                                    .nth(*cursor)
+                                    .map(|(i, _)| i)
+                                    .unwrap_or(value.len());
+                                value.insert(byte_pos, *c);
+                                *cursor += 1;
+                            }
+                        }
+                        KeyCode::Backspace => {
+                            if *cursor > 0 {
+                                *cursor -= 1;
+                                let byte_pos = value.char_indices()
+                                    .nth(*cursor)
+                                    .map(|(i, _)| i)
+                                    .unwrap_or(value.len());
+                                value.remove(byte_pos);
+                            }
+                        }
+                        KeyCode::Left => {
+                            if *cursor > 0 { *cursor -= 1; }
+                        }
+                        KeyCode::Right => {
+                            if *cursor < value.chars().count() { *cursor += 1; }
+                        }
+                        _ => {}
+                    }
+                }
+            }
+        }
+    }
 }
 
 // Render helpers
 
-const DEFAULT_THEME: Theme = Theme {
-    bg: (24, 24, 32),
-    fg: (200, 200, 210),
-    btn_bg_idle: (45, 45, 58),
-    btn_fg_idle: (170, 170, 185),
-    btn_bg_focus: (50, 80, 160),
-    btn_fg_focus: (230, 235, 255),
-    btn_bg_press: (40, 160, 80),
-    btn_fg_press: (240, 255, 240),
-    border_idle: (70, 70, 90),
-    border_focus: (90, 130, 220),
-    border_press: (60, 200, 110),
-    shadow: (8, 8, 12),
-};
 
 const SMOOTH_BLOCKS: [char; 8] = [
     '\u{258F}', '\u{258E}', '\u{258D}', '\u{258C}',
@@ -351,7 +383,7 @@ fn apply_clip(term: &mut Term, clip: Option<(u16, u16, u16, u16)>) {
 // Main render system
 
 fn render_ui(ctx: &mut Context) {
-    let theme = ctx.store::<Theme>().copied().unwrap_or(DEFAULT_THEME);
+    let theme = ctx.store::<Theme>().copied().unwrap_or(Theme::dark());
 
     // Collect visible nodes sorted by z_index
     let mut render_list: Vec<(NodeId, i16)> = ctx.nodes()

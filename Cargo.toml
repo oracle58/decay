@@ -3,7 +3,7 @@ members = [".", "benches"]
 
 [package]
 name = "decay"
-version = "0.2.0"
+version = "0.2.1"
 edition = "2024"
 description = "Zero-dependency modular TUI framework"
 license = "Apache-2.0"

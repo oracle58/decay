@@ -20,7 +20,7 @@ pub struct Theme {
 impl Store for Theme {}
 
 impl Theme {
-    pub fn dark() -> Self {
+    pub const fn dark() -> Self {
         Self {
             bg: (24, 24, 32),
             fg: (200, 200, 210),
