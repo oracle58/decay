@@ -9,7 +9,7 @@ pub mod state;
 pub mod store;
 pub mod system;
 
-pub use app::{App, AppExit};
+pub use app::{App, AppExit, DeltaTime};
 pub use cmd::Cmd;
 pub use context::Context;
 pub use event::Events;

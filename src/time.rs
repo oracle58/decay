@@ -1,8 +1,6 @@
 use crate::core::Store;
 
-/// Frame delta time in seconds.
-pub struct DeltaTime(pub f32);
-impl Store for DeltaTime {}
+pub use crate::core::app::DeltaTime;
 
 /// A countdown timer that can be repeating.
 pub struct Timer {

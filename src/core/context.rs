@@ -9,7 +9,7 @@ pub struct Context {
     free_list: Vec<u32>,
     next_id: u32,
     root: Option<NodeId>,
-    stores: HashMap<TypeId, Box<dyn Any>>,
+    pub(crate) stores: HashMap<TypeId, Box<dyn Any>>,
     tick: u32,
 }
 

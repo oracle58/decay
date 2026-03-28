@@ -49,7 +49,7 @@ pub mod prelude {
     pub use crate::core::input::{Input, KeyCode, MouseEvent};
     #[cfg(feature = "core")]
     pub use crate::core::{
-        App, AppExit, Context, Store, Lifecycle, NodeId, Node, Content,
+        App, AppExit, DeltaTime, Context, Store, Lifecycle, NodeId, Node, Content,
         Style, Rect, TextAlign, Anchor, Interaction,
         BorderStyle, ProgressStyle, SpinnerStyle,
         Cmd, Events, IntroPlugin, State, Plugin, CorePlugins,

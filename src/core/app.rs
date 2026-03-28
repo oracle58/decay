@@ -1,4 +1,6 @@
+use std::any::TypeId;
 use std::collections::HashMap;
+use std::io::Write;
 use std::time::{Duration, Instant};
 
 use super::context::Context;
@@ -11,6 +13,10 @@ use crate::term::Term;
 /// Set to true to exit the application loop.
 pub struct AppExit(pub bool);
 impl Store for AppExit {}
+
+/// Frame delta time in seconds.
+pub struct DeltaTime(pub f32);
+impl Store for DeltaTime {}
 
 pub struct App {
     pub(crate) ctx: Context,
@@ -81,6 +87,7 @@ impl App {
 
     pub fn run(&mut self) {
         self.ctx.insert_store(AppExit(false));
+        self.ctx.insert_store(DeltaTime(0.0));
 
         Self::run_stage(&mut self.ctx, self.systems.get(&Lifecycle::Setup));
         Self::run_stage(&mut self.ctx, self.systems.get(&Lifecycle::AfterSetup));
@@ -92,10 +99,27 @@ impl App {
 
         if !has_loop { return; }
 
+        // Restore terminal on panic so the shell isn't left in raw mode
+        let prev_hook = std::panic::take_hook();
+        std::panic::set_hook(Box::new(move |info| {
+            let _ = std::io::stdout().write_all(b"\x1b[?25h\x1b[?1049l\x1b[0m");
+            let _ = std::io::stdout().flush();
+            crate::term::cleanup();
+            prev_hook(info);
+        }));
+
         let target_frame = Duration::from_millis(16);
+        let mut last_frame = Instant::now();
 
         loop {
             let frame_start = Instant::now();
+            let dt = frame_start.duration_since(last_frame).as_secs_f32();
+            last_frame = frame_start;
+
+            if let Some(delta) = self.ctx.store_mut::<DeltaTime>() {
+                delta.0 = dt;
+            }
+
             self.ctx.increment_tick();
 
             // Swap event buffers
@@ -127,6 +151,8 @@ impl App {
             if elapsed < target_frame { std::thread::sleep(target_frame - elapsed); }
         }
 
+        let _ = std::panic::take_hook();
+
         if let Some(term) = self.ctx.store_mut::<Term>() {
             term.show_cursor().leave_alt_screen().flush().ok();
         }
@@ -142,9 +168,12 @@ impl App {
     }
 
     fn swap_events(ctx: &mut Context) {
-        if let Some(registry) = ctx.store::<EventRegistry>() {
-            let registry = registry as *const EventRegistry;
-            unsafe { &*registry }.swap_all(ctx);
+        let key = TypeId::of::<EventRegistry>();
+        if let Some(mut boxed) = ctx.stores.remove(&key) {
+            if let Some(reg) = boxed.downcast_mut::<EventRegistry>() {
+                reg.swap_all(ctx);
+            }
+            ctx.stores.insert(key, boxed);
         }
     }
 }

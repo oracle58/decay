@@ -26,7 +26,7 @@ impl Rect {
 ///
 /// When `min == max`, the node is fixed-size at that anchor point.
 /// When `min != max`, the node stretches between those proportional points.
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 pub struct Anchor {
     pub min: (f32, f32),
     pub max: (f32, f32),
@@ -114,7 +114,7 @@ impl Style {
 }
 
 /// What a node displays. Determines rendering behavior.
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub enum Content {
     /// Invisible layout container.
     Container,
@@ -144,6 +144,7 @@ pub enum Content {
 }
 
 /// A node in the UI tree. Owns all its data inline.
+#[derive(Debug)]
 pub struct Node {
     pub(crate) id: NodeId,
     pub rect: Rect,

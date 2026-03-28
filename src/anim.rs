@@ -68,6 +68,10 @@ impl Tween {
     }
 
     pub fn advance(&mut self, dt: f32) -> f32 {
+        if self.duration <= 0.0 {
+            self.finished = true;
+            return self.to;
+        }
         self.elapsed += dt;
         let t = (self.elapsed / self.duration).min(1.0);
         if t >= 1.0 {
@@ -114,7 +118,8 @@ impl KeyframeTrack {
         }
         let (t0, v0) = self.keyframes[i];
         let (t1, v1) = self.keyframes[i + 1];
-        let local_t = (self.elapsed - t0) / (t1 - t0);
+        let span = t1 - t0;
+        let local_t = if span > 0.0 { (self.elapsed - t0) / span } else { 1.0 };
         let eased = self.easing.apply(local_t);
         v0 + (v1 - v0) * eased
     }

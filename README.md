@@ -31,12 +31,12 @@ Features: `full` (default), `core`, `term`, `ui`, `progress`, `anim`, `time`, `r
 
 ## Examples
 
-Minimal app — styled text and keyboard input:
+Minimal app(styled text and keyboard input):
 ```
 cargo run --example simple
 ```
 
-Kitchen sink — panels, progress bars, spinners, buttons, animated text:
+Dashboard(panels, progress bars, spinners, buttons, animated text):
 ```
 cargo run --example dashboard
 ```
@@ -50,7 +50,7 @@ cargo run --example dashboard
 | `ui` | Text, buttons, panels, separators, progress bars, spinners, text input, anchor layout, focus navigation, z-ordering, theming |
 | `anim` | Tweens, keyframe tracks, four easing curves |
 | `time` | Frame delta tracking, one-shot and repeating timers |
-| `rand` | xorshift64 RNG — range, pick, shuffle, weighted chance |
+| `rand` | xorshift64 RNG: range, pick, shuffle, weighted chance |
 | `serde` | Binary serialize/deserialize for primitives, `Vec`, and `String` |
 | `intro` | Startup animation sequence |
 
