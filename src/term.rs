@@ -40,7 +40,10 @@ pub struct Term {
 impl Term {
     pub fn new() -> io::Result<Self> {
         platform::init()?;
-        let (cols, rows) = platform::term_size().unwrap_or((80, 24));
+        let (cols, rows) = platform::term_size()
+            .ok()
+            .filter(|&(c, r)| c > 0 && r > 0)
+            .unwrap_or((80, 24));
         let n = (cols as usize) * (rows as usize);
         Ok(Self {
             out: stdout(),
@@ -650,11 +653,19 @@ pub(crate) mod platform {
     const ICRNL: u32 = 0x0100;
     #[cfg(target_os = "linux")]
     const IXON: u32 = 0x0400;
+    #[cfg(target_os = "linux")]
+    const OPOST: u32 = 0x0001;
+    #[cfg(target_os = "linux")]
+    const IEXTEN: u32 = 0x8000;
 
     #[cfg(target_os = "macos")]
     const ICRNL: u64 = 0x0000_0100;
     #[cfg(target_os = "macos")]
     const IXON: u64 = 0x0000_0200;
+    #[cfg(target_os = "macos")]
+    const OPOST: u64 = 0x0000_0001;
+    #[cfg(target_os = "macos")]
+    const IEXTEN: u64 = 0x0000_0400;
 
     #[cfg(target_os = "linux")]
     const VMIN: usize = 6;
@@ -720,7 +731,8 @@ pub(crate) mod platform {
             let _ = ORIGINAL_TERMIOS.set(original);
 
             let mut raw = original;
-            raw.c_lflag &= !(ECHO | ICANON | ISIG);
+            raw.c_lflag &= !(ECHO | ICANON | ISIG | IEXTEN);
+            raw.c_oflag &= !OPOST;
             raw.c_iflag &= !(ICRNL | IXON);
             raw.c_cc[VMIN] = 0;
             raw.c_cc[VTIME] = 0;
