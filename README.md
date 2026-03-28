@@ -1,6 +1,8 @@
 # Decay
 
 [![Crates.io](https://img.shields.io/crates/v/decay)](https://crates.io/crates/decay)
+[![GitHub Release](https://img.shields.io/github/v/release/oracle58/decay)](https://github.com/oracle58/decay/releases)
+[![Tests](https://img.shields.io/github/actions/workflow/status/oracle58/decay/ci.yml?label=tests)](https://github.com/oracle58/decay/actions)
 
 Zero-dependency TUI framework. Talks directly to Win32 and termios. No crossterm, ncurses or libc wrappers.
 
