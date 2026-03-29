@@ -18,21 +18,13 @@ Zero-dependency TUI framework. Talks directly to Win32 and termios. No crossterm
 Full:
 ```toml
 [dependencies]
-decay = "0.2"
+decay = "0.2.2"
 ```
 
-Pick individual components:
+Features:
 ```toml
 [dependencies]
-decay = { version = "0.2", default-features = false, features = ["progress", "panel"] }
-```
-
-Each component works standalone — no framework required:
-```rust
-use decay::ui::{ProgressBar, Panel};
-
-Panel::new("Status").with_height(3).print(40);
-ProgressBar::new(0.75).with_label().print(30);
+decay = { version = "0.2.2", default-features = false, features = ["progress", "panel"] }
 ```
 
 ### Features
