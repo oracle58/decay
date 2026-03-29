@@ -15,13 +15,13 @@ Zero-dependency TUI framework. Talks directly to Win32 and termios. No crossterm
 | macOS    | Untested | termios + ioctl |
 
 ## Install
-
+Full:
 ```toml
 [dependencies]
 decay = "0.2"
 ```
 
-Or pick what you need:
+Features:
 ```toml
 [dependencies]
 decay = { version = "0.2", default-features = false, features = ["ui"] }

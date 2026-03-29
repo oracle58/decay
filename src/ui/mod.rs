@@ -1,5 +1,9 @@
 pub mod theme;
-#[cfg(feature = "progress")]
+pub mod label;
+pub mod timer;
+pub mod panel;
+pub mod button;
+pub mod input;
 pub mod progress;
 
 pub use theme::Theme;
