@@ -21,13 +21,33 @@ Full:
 decay = "0.2"
 ```
 
-Features:
+Pick individual components:
 ```toml
 [dependencies]
-decay = { version = "0.2", default-features = false, features = ["ui"] }
+decay = { version = "0.2", default-features = false, features = ["progress", "panel"] }
 ```
 
-Features: `full` (default), `core`, `term`, `ui`, `progress`, `anim`, `time`, `rand`, `serde`, `intro`
+Each component works standalone — no framework required:
+```rust
+use decay::ui::{ProgressBar, Panel};
+
+Panel::new("Status").with_height(3).print(40);
+ProgressBar::new(0.75).with_label().print(30);
+```
+
+### Features
+
+| Feature | Component | Description |
+|---------|-----------|-------------|
+| `label` | `Label` | Styled text with alignment, colors, bold/dim/italic |
+| `timer` | `TimerDisplay` | Elapsed/countdown display (MM:SS or HH:MM:SS) |
+| `panel` | `Panel` | Bordered box with optional title and shadow |
+| `button` | `Button` | Visual button with idle/focused/pressed states |
+| `input` | `TextInput` | Text input field with placeholder and cursor |
+| `progress` | `ProgressBar` | Progress bar with smooth/classic/dot styles |
+| `intro` | — | Tree intro animation |
+| `ui` | All above + `UiPlugin` rendering system |
+| `full` (default) | Everything |
 
 ## Examples
 
@@ -41,18 +61,17 @@ Dashboard(panels, progress bars, spinners, buttons, animated text):
 cargo run --example dashboard
 ```
 
-## Modules
+## Architecture
 
-| Module | Function |
-|--------|--------------|
-| `core` | Node tree, typed stores, 7-stage lifecycle loop, deferred command buffer, input and event plumbing |
-| `term` | Double-buffered framebuffer, cell-level diffing, 24-bit color, text attributes, mouse input, direct platform syscalls |
-| `ui` | Text, buttons, panels, separators, progress bars, spinners, text input, anchor layout, focus navigation, z-ordering, theming |
+| Module | Description |
+|--------|-------------|
+| `core` | Node tree, typed stores, 7-stage lifecycle loop, deferred commands, input/event plumbing |
+| `term` | Double-buffered framebuffer, cell-level diffing, 24-bit color, mouse input, platform syscalls |
+| `ui` | Standalone widgets + full rendering system with anchor layout, focus navigation, z-ordering, theming |
 | `anim` | Tweens, keyframe tracks, four easing curves |
 | `time` | Frame delta tracking, one-shot and repeating timers |
 | `rand` | xorshift64 RNG: range, pick, shuffle, weighted chance |
 | `serde` | Binary serialize/deserialize for primitives, `Vec`, and `String` |
-| `intro` | Startup animation sequence |
 
 ## Benchmarks
 
