@@ -1,5 +1,4 @@
 pub mod theme;
-#[cfg(feature = "progress")]
 pub mod progress;
 
 pub use theme::Theme;

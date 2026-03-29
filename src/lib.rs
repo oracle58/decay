@@ -19,20 +19,16 @@
 //! }
 //! ```
 
-#[cfg(feature = "anim")]
 pub mod anim;
-#[cfg(feature = "core")]
 pub mod core;
+pub mod rand;
+pub mod serde;
+pub mod term;
+pub mod time;
+
 #[cfg(feature = "intro")]
 pub mod intro;
-#[cfg(feature = "rand")]
-pub mod rand;
-#[cfg(feature = "serde")]
-pub mod serde;
-#[cfg(feature = "term")]
-pub mod term;
-#[cfg(feature = "time")]
-pub mod time;
+
 #[cfg(feature = "ui")]
 pub mod ui;
 
@@ -45,16 +41,13 @@ pub mod ui {
 }
 
 pub mod prelude {
-    #[cfg(feature = "core")]
     pub use crate::core::input::{Input, KeyCode, MouseEvent};
-    #[cfg(feature = "core")]
     pub use crate::core::{
         App, AppExit, DeltaTime, Context, Store, Lifecycle, NodeId, Node, Content,
         Style, Rect, TextAlign, Anchor, Interaction,
         BorderStyle, ProgressStyle, SpinnerStyle,
         Cmd, Events, IntroPlugin, State, Plugin, CorePlugins,
     };
-    #[cfg(feature = "rand")]
     pub use crate::rand::Rng;
     #[cfg(feature = "ui")]
     pub use crate::ui::UiPlugin;

@@ -3,9 +3,9 @@ members = [".", "benches"]
 
 [package]
 name = "decay"
-version = "0.2.1"
+version = "0.2.2"
 edition = "2024"
-description = "Zero-dependency modular TUI framework"
+description = "Zero-dependency TUI framework"
 license = "Apache-2.0"
 readme = "README.md"
 repository = "https://github.com/oracle58/decay"
@@ -14,16 +14,10 @@ keywords = ["tui", "terminal", "framework"]
 
 [features]
 default = ["full"]
-full = ["core", "term", "ui", "anim", "time", "rand", "serde", "intro"]
-core = ["term"]
-term = ["core"]
-ui = ["core", "term"]
-progress = ["term"]
-anim = ["core"]
-time = ["core"]
-rand = ["core"]
-serde = []
-intro = ["term"]
+full = ["ui", "progress", "intro"]
+ui = []
+progress = []
+intro = []
 
 [[example]]
 name = "simple"
