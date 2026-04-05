@@ -3,7 +3,7 @@ members = [".", "benches"]
 
 [package]
 name = "decay"
-version = "0.2.2"
+version = "0.2.3"
 edition = "2024"
 description = "Zero-dependency TUI framework"
 license = "Apache-2.0"
@@ -15,7 +15,7 @@ keywords = ["tui", "terminal", "framework"]
 [features]
 default = ["full"]
 full = ["ui"]
-ui = ["label", "timer", "panel", "button", "input", "progress", "intro"]
+ui = ["label", "timer", "panel", "button", "input", "progress", "intro", "spinner"]
 label = []
 timer = []
 panel = []
@@ -23,6 +23,7 @@ button = []
 input = []
 progress = []
 intro = []
+spinner = []
 
 [[example]]
 name = "simple"

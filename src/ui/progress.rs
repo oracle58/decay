@@ -1,4 +1,8 @@
 use crate::core::node::ProgressStyle;
+#[cfg(feature = "spinner")]
+use crate::core::node::SpinnerStyle;
+#[cfg(feature = "spinner")]
+use super::spinner::SpinnerFrames;
 
 /// Progress bar component with configurable style and colors.
 pub struct ProgressBar {
@@ -8,6 +12,8 @@ pub struct ProgressBar {
     pub fg_empty: (u8, u8, u8),
     pub gradient_end: Option<(u8, u8, u8)>,
     pub show_label: bool,
+    #[cfg(feature = "spinner")]
+    spinner: Option<SpinnerFrames>,
 }
 
 
@@ -20,11 +26,22 @@ impl ProgressBar {
             fg_empty: (50, 50, 60),
             gradient_end: None,
             show_label: false,
+            #[cfg(feature = "spinner")]
+            spinner: None,
         }
     }
 
     pub fn classic(value: f32) -> Self {
         Self { style: ProgressStyle::Classic, ..Self::new(value) }
+    }
+
+    /// Prepend an animated spinner to the progress bar.
+    ///
+    /// Each call to `print()` advances the spinner one frame.
+    #[cfg(feature = "spinner")]
+    pub fn with_spinner(mut self, style: SpinnerStyle) -> Self {
+        self.spinner = Some(SpinnerFrames::new(style));
+        self
     }
 
     pub fn set(&mut self, value: f32) {
@@ -115,8 +132,16 @@ impl ProgressBar {
         let (fr, fg, fb) = self.fg_fill;
         let (er, eg, eb) = self.fg_empty;
         let fill_count = (self.value * width as f32) as usize;
-        // Move to start of line and set fill color
-        print!("\r\x1b[38;2;{fr};{fg};{fb}m");
+        // Move to start of line
+        print!("\r");
+        // Spinner prefix (if enabled)
+        #[cfg(feature = "spinner")]
+        if let Some(ref spinner) = self.spinner {
+            let frame = spinner.tick();
+            print!("{frame} ");
+        }
+        // Set fill color
+        print!("\x1b[38;2;{fr};{fg};{fb}m");
         match self.style {
             ProgressStyle::Smooth => {
                 let remainder = (self.value * width as f32 * 8.0) as usize % 8;

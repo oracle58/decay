@@ -18,13 +18,13 @@ Zero-dependency TUI framework. Talks directly to Win32 and termios. No crossterm
 Full:
 ```toml
 [dependencies]
-decay = "0.2.2"
+decay = "0.2.3"
 ```
 
 Features:
 ```toml
 [dependencies]
-decay = { version = "0.2.2", default-features = false, features = ["progress", "panel"] }
+decay = { version = "0.2.3", default-features = false, features = ["progress", "panel"] }
 ```
 
 ### Features
@@ -67,8 +67,6 @@ cargo run --example dashboard
 
 ## Benchmarks
 
-[Criterion](https://github.com/bheisler/criterion.rs), release builds.
-
 ### Framebuffer diff
 
 | Scenario | 80x24 | 120x40 | 240x80 |
@@ -77,7 +75,7 @@ cargo run --example dashboard
 | 5% dirty | 6.3 us | 15.5 us | 62.0 us |
 | 100% dirty | 103 us | 259 us | 1.03 ms |
 
-Most frames touch under 5% of cells. At 120x40 that's ~15 us — well inside a 16 ms frame budget.
+Most frames touch under 5% of cells. At 120x40 that's ~15 us.
 
 ### I/O
 

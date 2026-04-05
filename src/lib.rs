@@ -37,7 +37,8 @@ pub mod ui;
     not(feature = "ui"),
     any(
         feature = "label", feature = "timer", feature = "panel",
-        feature = "button", feature = "input", feature = "progress"
+        feature = "button", feature = "input", feature = "progress",
+        feature = "spinner"
     )
 ))]
 pub mod ui {
@@ -74,6 +75,18 @@ pub mod ui {
     pub use progress::ProgressBar;
     #[cfg(feature = "progress")]
     pub use crate::core::node::ProgressStyle;
+
+    #[cfg(feature = "spinner")]
+    pub mod spinner;
+    #[cfg(feature = "spinner")]
+    pub use spinner::SpinnerFrames;
+    #[cfg(feature = "spinner")]
+    pub use crate::core::node::SpinnerStyle;
+
+    #[cfg(feature = "spinner")]
+    pub mod status;
+    #[cfg(feature = "spinner")]
+    pub use status::StatusLine;
 }
 
 pub mod prelude {
