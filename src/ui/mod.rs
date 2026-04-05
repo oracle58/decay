@@ -5,8 +5,12 @@ pub mod panel;
 pub mod button;
 pub mod input;
 pub mod progress;
+pub mod spinner;
+pub mod status;
 
 pub use theme::Theme;
+pub use spinner::SpinnerFrames;
+pub use status::StatusLine;
 
 use crate::core::app::{App, DeltaTime};
 use crate::core::context::Context;
@@ -325,12 +329,7 @@ fn border_chars(border: BorderStyle) -> (char, char, char, char, char, char) {
 }
 
 fn spinner_frames(style: SpinnerStyle) -> &'static [char] {
-    match style {
-        SpinnerStyle::Dots   => &['\u{280B}', '\u{2819}', '\u{2839}', '\u{2838}', '\u{283C}', '\u{2834}', '\u{2826}', '\u{2827}', '\u{2807}', '\u{280F}'],
-        SpinnerStyle::Line   => &['\u{2500}', '\\', '\u{2502}', '/'],
-        SpinnerStyle::Block  => &['\u{2596}', '\u{2598}', '\u{259D}', '\u{2597}'],
-        SpinnerStyle::Circle => &['\u{25D0}', '\u{25D3}', '\u{25D1}', '\u{25D2}'],
-    }
+    spinner::frames_for(style)
 }
 
 // Clipping
